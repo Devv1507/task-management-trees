@@ -54,7 +54,8 @@ cd temporal-repository
 ### 2. Crear entorno virtual (recomendado)
 
 ```bash
-python -m venv env ## o python3
+python -m venv env
+## python3 -m venv env
 
 # Activar en Windows
 env\Scripts\activate
@@ -78,10 +79,21 @@ pip install -r requirements.txt
 ### Ejecutar la aplicacion
 
 ```bash
-python main.py ## o python 3
+python main.py
+## python3 main.py
 ```
 
 ```bash
+# Todas las pruebas
+python tests/run_all_tests.py
+## python3 tests/run_all_tests.py
+
 # Pruebas de AVL Tree
-python tests/test_avl_tree.py ## o python 3
+python tests/test_avl_tree.py
+## python3 tests/test_avl_tree.py
+
+
+# Solo pruebas de Max-Heap
+python tests/test_max_heap.py
+## python3 tests/test_max_heap.py
 ```
