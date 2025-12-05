@@ -4,8 +4,6 @@ Ejecuta todas las pruebas del sistema.
 
 import sys
 import os
-
-# Agregar el directorio raíz al path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from tests.test_max_heap import run_all_tests as test_heap
