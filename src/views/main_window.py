@@ -211,3 +211,82 @@ class MainWindow:
             wrap="none"
         )
         self.tasks_textbox.pack(fill="both", expand=True, padx=15, pady=(0, 15))
+
+        # ========== PANEL INFERIOR: VISUALIZACIONES ==========
+        viz_frame = ctk.CTkFrame(self.root)
+        viz_frame.pack(fill="x", padx=10, pady=(0, 10))
+
+        viz_title = ctk.CTkLabel(
+            viz_frame,
+            text="Visualizacion de Estructuras de Datos",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        viz_title.pack(pady=10)
+
+        # Frame para heap y AVL lado a lado
+        viz_container = ctk.CTkFrame(viz_frame, fg_color="transparent")
+        viz_container.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+        # Panel MaxHeap
+        heap_frame = ctk.CTkFrame(viz_container)
+        heap_frame.pack(side="left", fill="both", expand=True, padx=(0, 5))
+
+        heap_label = ctk.CTkLabel(
+            heap_frame,
+            text="Max-Heap (Arreglo)",
+            font=ctk.CTkFont(size=14, weight="bold")
+        )
+        heap_label.pack(pady=5)
+
+        self.heap_viz_textbox = ctk.CTkTextbox(
+            heap_frame,
+            height=120,
+            font=ctk.CTkFont(family="Courier New", size=11)
+        )
+        self.heap_viz_textbox.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+        # Panel AVL Tree (Recorridos + Operaciones)
+        avl_frame = ctk.CTkFrame(viz_container)
+        avl_frame.pack(side="right", fill="both", expand=True, padx=(5, 0))
+
+        # Sub-frame para recorridos
+        traversals_subframe = ctk.CTkFrame(avl_frame)
+        traversals_subframe.pack(side="left", fill="both", expand=True, padx=(0, 5))
+
+        traversals_label = ctk.CTkLabel(
+            traversals_subframe,
+            text="Arbol AVL (Recorridos)",
+            font=ctk.CTkFont(size=14, weight="bold")
+        )
+        traversals_label.pack(pady=5)
+
+        self.avl_traversals_textbox = ctk.CTkTextbox(
+            traversals_subframe,
+            height=120,
+            font=ctk.CTkFont(family="Courier New", size=10)
+        )
+        self.avl_traversals_textbox.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+        # Sub-frame para operaciones
+        operations_subframe = ctk.CTkFrame(avl_frame)
+        operations_subframe.pack(side="right", fill="both", expand=True, padx=(5, 0))
+
+        operations_label = ctk.CTkLabel(
+            operations_subframe,
+            text="Historial de Operaciones",
+            font=ctk.CTkFont(size=14, weight="bold")
+        )
+        operations_label.pack(pady=5)
+
+        self.avl_operations_textbox = ctk.CTkTextbox(
+            operations_subframe,
+            height=120,
+            font=ctk.CTkFont(family="Courier New", size=10)
+        )
+        self.avl_operations_textbox.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+    def _set_date(self, days_offset):
+        """Establece la fecha en el campo de entrada"""
+        target_date = datetime.now() + timedelta(days=days_offset)
+        self.date_entry.delete(0, 'end')
+        self.date_entry.insert(0, target_date.strftime("%Y-%m-%d"))
