@@ -21,6 +21,7 @@ class AVLTree:
 
     def __init__(self):
         self.root = None
+        self.operations = []  # Historial de operaciones (inserciones, eliminaciones, rotaciones)
 
     def _get_height(self, node):
         """Retorna la altura de un nodo"""
@@ -55,6 +56,9 @@ class AVLTree:
         y = z.left
         B = y.right
 
+        # Registrar operación
+        self.operations.append(f"Rotacion Derecha en nodo ID:{z.task.task_id}")
+
         # Realizar rotación
         y.right = z
         z.left = B
@@ -76,6 +80,9 @@ class AVLTree:
         """
         y = z.right
         B = y.left
+
+        # Registrar operación
+        self.operations.append(f"Rotacion Izquierda en nodo ID:{z.task.task_id}")
 
         # Realizar rotación
         y.left = z
@@ -123,6 +130,7 @@ class AVLTree:
         Inserta una tarea en el árbol AVL por su ID.
         Complejidad: O(log n)
         """
+        self.operations.append(f"Insercion ID:{task.task_id}")
         self.root = self._insert_recursive(self.root, task)
 
     def _insert_recursive(self, node, task):
@@ -168,6 +176,7 @@ class AVLTree:
         Elimina una tarea del árbol por su ID.
         Complejidad: O(log n)
         """
+        self.operations.append(f"Eliminacion ID:{task_id}")
         self.root = self._delete_recursive(self.root, task_id)
 
     def _delete_recursive(self, node, task_id):
@@ -235,3 +244,43 @@ class AVLTree:
         if not node:
             return 0
         return 1 + self._count_nodes(node.left) + self._count_nodes(node.right)
+
+    def get_tree_structure(self):
+        """
+        Retorna una representación visual simple del árbol AVL.
+        Muestra la estructura con indentación.
+
+        Returns:
+            str: Representación textual del árbol
+        """
+        if self.is_empty():
+            return "Arbol vacio"
+
+        lines = []
+        self._build_tree_string(self.root, "", True, lines)
+        return "\n".join(lines)
+
+    def _build_tree_string(self, node, prefix, is_tail, lines):
+        """
+        Construye recursivamente la representación del árbol.
+
+        Args:
+            node: Nodo actual
+            prefix: Prefijo para la línea actual
+            is_tail: Si es el último hijo
+            lines: Lista de líneas de salida
+        """
+        if node:
+            lines.append(prefix + ("└── " if is_tail else "├── ") +
+                        f"ID:{node.task.task_id} ({node.task.priority_name[0]}, h={node.height})")
+
+            children = []
+            if node.left:
+                children.append(node.left)
+            if node.right:
+                children.append(node.right)
+
+            for i, child in enumerate(children):
+                extension = "    " if is_tail else "│   "
+                is_last = (i == len(children) - 1)
+                self._build_tree_string(child, prefix + extension, is_last, lines)
