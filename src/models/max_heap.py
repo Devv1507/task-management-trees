@@ -143,3 +143,48 @@ class MaxHeap:
     def get_all_tasks(self):
         """Retorna todas las tareas en el heap (sin orden específico)"""
         return self.heap.copy()
+
+    def get_heap_representation(self):
+        """
+        Retorna una representación visual del heap como arreglo.
+        Util para visualizar y verificar la estructura del max-heap.
+
+        Returns:
+            str: Representación del heap mostrando [ID-PRIORIDAD-FECHA]
+        """
+        if self.is_empty():
+            return "Heap vacío: []"
+
+        representation = "["
+        for i, task in enumerate(self.heap):
+            representation += f"({task.task_id}:{task.priority_name[0]}{task.due_date[8:]})"
+            if i < len(self.heap) - 1:
+                representation += ", "
+        representation += "]"
+
+        return representation
+
+    def get_heap_levels(self):
+        """
+        Retorna el heap organizado por niveles para visualización.
+
+        Returns:
+            list: Lista de niveles, donde cada nivel es una lista de tareas
+        """
+        if self.is_empty():
+            return []
+
+        levels = []
+        level = 0
+        while True:
+            start_idx = 2**level - 1
+            end_idx = 2**(level + 1) - 1
+
+            if start_idx >= len(self.heap):
+                break
+
+            level_tasks = self.heap[start_idx:min(end_idx, len(self.heap))]
+            levels.append(level_tasks)
+            level += 1
+
+        return levels
