@@ -42,13 +42,19 @@ class MainWindow:
 
     def _create_widgets(self):
         """Crea todos los widgets de la interfaz"""
+        # Variables para el divisor arrastrable
+        self.dragging = False
+        self.drag_start_y = 0
+        self.main_container_height = 500
+        self.viz_frame_height = 280
+
         # ========== FRAME SUPERIOR: ESTADÍSTICAS ==========
         stats_header_frame = ctk.CTkFrame(self.root)
         stats_header_frame.pack(fill="x", padx=10, pady=10)
 
         stats_title = ctk.CTkLabel(
             stats_header_frame,
-            text="Estadísticas de Tareas",
+            text="Estadisticas",
             font=ctk.CTkFont(size=18, weight="bold")
         )
         stats_title.pack(pady=5)
@@ -62,13 +68,13 @@ class MainWindow:
         self.stats_label.pack(pady=5)
 
         # ========== CONTENEDOR PRINCIPAL ==========
-        main_container = ctk.CTkFrame(self.root)
-        main_container.pack(fill="both", expand=True, padx=10, pady=10)
+        self.main_container = ctk.CTkFrame(self.root, height=self.main_container_height)
+        self.main_container.pack(fill="both", expand=False, padx=10, pady=10)
+        self.main_container.pack_propagate(False)
 
         # ========== PANEL IZQUIERDO: AGREGAR TAREA ==========
-        left_panel = ctk.CTkFrame(main_container)
+        left_panel = ctk.CTkScrollableFrame(self.main_container, width=330)
         left_panel.pack(side="left", fill="both", padx=(0, 5), pady=0, expand=False)
-        left_panel.configure(width=350)
 
         # Título del panel
         add_title = ctk.CTkLabel(
@@ -130,7 +136,7 @@ class MainWindow:
         # Botón agregar
         add_button = ctk.CTkButton(
             left_panel,
-            text="Añadir Tarea",
+            text="Agregar Tarea",
             command=self.add_task,
             height=40,
             font=ctk.CTkFont(size=14, weight="bold"),
@@ -140,7 +146,7 @@ class MainWindow:
         add_button.pack(pady=20, padx=20, fill="x")
 
         # ========== PANEL DERECHO: LISTA DE TAREAS ==========
-        right_panel = ctk.CTkFrame(main_container)
+        right_panel = ctk.CTkFrame(self.main_container)
         right_panel.pack(side="right", fill="both", expand=True, padx=(5, 0), pady=0)
 
         # Título y controles
@@ -160,7 +166,7 @@ class MainWindow:
 
         complete_btn = ctk.CTkButton(
             button_frame,
-            text="✓ Completar Prioritaria",
+            text="Completar Prioritaria",
             command=self.complete_highest_priority,
             fg_color="#4CAF50",
             hover_color="#45a049",
@@ -212,19 +218,41 @@ class MainWindow:
         )
         self.tasks_textbox.pack(fill="both", expand=True, padx=15, pady=(0, 15))
 
+        # ========== DIVISOR ARRASTRABLE ==========
+        self.divider_frame = ctk.CTkFrame(self.root, height=8, cursor="sb_v_double_arrow")
+        self.divider_frame.pack(fill="x", padx=10, pady=0)
+
+        # Label del divisor
+        divider_label = ctk.CTkLabel(
+            self.divider_frame,
+            text="═══ Arrastrar para redimensionar ═══",
+            font=ctk.CTkFont(size=9),
+            text_color="#888888"
+        )
+        divider_label.pack(pady=0)
+
+        # Eventos de arrastre
+        self.divider_frame.bind("<Button-1>", self._start_drag)
+        self.divider_frame.bind("<B1-Motion>", self._on_drag)
+        self.divider_frame.bind("<ButtonRelease-1>", self._stop_drag)
+        divider_label.bind("<Button-1>", self._start_drag)
+        divider_label.bind("<B1-Motion>", self._on_drag)
+        divider_label.bind("<ButtonRelease-1>", self._stop_drag)
+
         # ========== PANEL INFERIOR: VISUALIZACIONES ==========
-        viz_frame = ctk.CTkFrame(self.root)
-        viz_frame.pack(fill="x", padx=10, pady=(0, 10))
+        self.viz_frame = ctk.CTkFrame(self.root, height=self.viz_frame_height)
+        self.viz_frame.pack(fill="both", expand=False, padx=10, pady=(0, 10))
+        self.viz_frame.pack_propagate(False)
 
         viz_title = ctk.CTkLabel(
-            viz_frame,
+            self.viz_frame,
             text="Visualizacion de Estructuras de Datos",
             font=ctk.CTkFont(size=16, weight="bold")
         )
         viz_title.pack(pady=10)
 
         # Frame para heap y AVL lado a lado
-        viz_container = ctk.CTkFrame(viz_frame, fg_color="transparent")
+        viz_container = ctk.CTkFrame(self.viz_frame, fg_color="transparent")
         viz_container.pack(fill="both", expand=True, padx=10, pady=(0, 10))
 
         # Panel MaxHeap
@@ -290,6 +318,43 @@ class MainWindow:
         target_date = datetime.now() + timedelta(days=days_offset)
         self.date_entry.delete(0, 'end')
         self.date_entry.insert(0, target_date.strftime("%Y-%m-%d"))
+    
+    def _start_drag(self, event):
+        """Inicia el arrastre del divisor"""
+        self.dragging = True
+        self.drag_start_y = event.y_root
+
+    def _on_drag(self, event):
+        """Maneja el movimiento del divisor durante el arrastre"""
+        if not self.dragging:
+            return
+
+        # Calcular el desplazamiento
+        delta_y = event.y_root - self.drag_start_y
+        self.drag_start_y = event.y_root
+
+        # Actualizar alturas
+        new_main_height = self.main_container_height + delta_y
+        new_viz_height = self.viz_frame_height - delta_y
+
+        # Límites mínimos y máximos
+        min_main_height = 200
+        min_viz_height = 150
+        max_total_height = 800
+
+        # Verificar límites
+        if new_main_height >= min_main_height and new_viz_height >= min_viz_height:
+            if (new_main_height + new_viz_height) <= max_total_height:
+                self.main_container_height = new_main_height
+                self.viz_frame_height = new_viz_height
+
+                # Aplicar nuevas alturas
+                self.main_container.configure(height=self.main_container_height)
+                self.viz_frame.configure(height=self.viz_frame_height)
+
+    def _stop_drag(self, event):
+        """Detiene el arrastre del divisor"""
+        self.dragging = False
 
     def add_task(self):
         """Agrega una nueva tarea al sistema"""
@@ -338,7 +403,7 @@ class MainWindow:
             self.update_visualizations()
             messagebox.showinfo(
                 "Tarea Completada",
-                f"✓ Tarea completada:\n\n{task}"
+                f"Tarea completada:\n\n{task}"
             )
         else:
             messagebox.showinfo("Información", "No hay tareas pendientes")
@@ -416,7 +481,7 @@ class MainWindow:
             next_desc = next_task.description[:40] + '...' if len(next_task.description) > 40 else next_task.description
 
         stats_text = f"Total: {stats['total']}  |  Alta: {stats['alta']}  |  Media: {stats['media']}  |  Baja: {stats['baja']}\n"
-        stats_text += f"Próxima prioritaria: {next_desc}"
+        stats_text += f"Proxima prioritaria: {next_desc}"
 
         self.stats_label.configure(text=stats_text)
 
@@ -438,42 +503,36 @@ class MainWindow:
         self.avl_traversals_textbox.configure(state="normal")
         self.avl_traversals_textbox.delete("1.0", "end")
 
-        if avl_stats['nodes'] > 0:
-            # Mostrar los tres recorridos
-            self.avl_traversals_textbox.insert("end", "Recorridos del Arbol AVL:\n\n")
-            self.avl_traversals_textbox.insert("end", f"Preorden:  {traversals['preorden']}\n")
-            self.avl_traversals_textbox.insert("end", f"Inorden:   {traversals['inorden']}")
+        # Mostrar recorridos
+        self.avl_traversals_textbox.insert("end", "Recorridos del Arbol AVL:\n\n")
+        self.avl_traversals_textbox.insert("end", f"Preorden:  {traversals['preorden']}\n")
+        self.avl_traversals_textbox.insert("end", f"Inorden:   {traversals['inorden']}\n")
+        self.avl_traversals_textbox.insert("end", f"Postorden: {traversals['postorden']}\n\n")
 
-            # Verificar si el inorden está ordenado (BST válido)
-            if traversals['is_sorted']:
-                self.avl_traversals_textbox.insert("end", " ✓\n")
-            else:
-                self.avl_traversals_textbox.insert("end", " ✗ (ERROR)\n")
+        # Verificación de BST válido
+        is_sorted = traversals['is_sorted']
+        check_mark = "SI" if is_sorted else "NO"
+        self.avl_traversals_textbox.insert("end", f"Inorden ordenado (BST valido): {check_mark}\n\n")
 
-            self.avl_traversals_textbox.insert("end", f"Postorden: {traversals['postorden']}\n\n")
-
-            # Información adicional
-            balanced_text = "SI" if avl_stats['balanced'] else "NO"
-            self.avl_traversals_textbox.insert("end", f"Altura: {avl_stats['height']}, ")
-            self.avl_traversals_textbox.insert("end", f"Nodos: {avl_stats['nodes']}, ")
-            self.avl_traversals_textbox.insert("end", f"Balanceado: {balanced_text}")
-        else:
-            self.avl_traversals_textbox.insert("end", "Arbol vacio")
+        # Estadísticas del árbol
+        self.avl_traversals_textbox.insert("end", f"Altura: {avl_stats['altura']}, ")
+        self.avl_traversals_textbox.insert("end", f"Nodos: {avl_stats['nodos']}, ")
+        self.avl_traversals_textbox.insert("end", f"Balanceado: {'SI' if avl_stats['balanceado'] else 'NO'}\n")
 
         self.avl_traversals_textbox.configure(state="disabled")
 
-        # Actualizar historial de operaciones del AVL
+        # Actualizar historial de operaciones
         operations = self.controller.get_avl_operations(15)
 
         self.avl_operations_textbox.configure(state="normal")
         self.avl_operations_textbox.delete("1.0", "end")
 
         if operations:
-            self.avl_operations_textbox.insert("end", "Ultimas 15 operaciones:\n\n")
+            self.avl_operations_textbox.insert("end", "Ultimas operaciones:\n\n")
             for i, op in enumerate(operations, 1):
                 self.avl_operations_textbox.insert("end", f"{i}. {op}\n")
         else:
-            self.avl_operations_textbox.insert("end", "Sin operaciones registradas")
+            self.avl_operations_textbox.insert("end", "No hay operaciones registradas\n")
 
         self.avl_operations_textbox.configure(state="disabled")
 
