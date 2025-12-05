@@ -48,7 +48,7 @@ Este proyecto academico demuestra la implementacion y aplicacion practica de est
 
 ```bash
 git clone <url-del-repositorio>
-cd temporal-repository
+cd task-management-trees
 ```
 
 ### 2. Crear entorno virtual (recomendado)
