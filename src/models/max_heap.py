@@ -32,11 +32,12 @@ class MaxHeap:
         """
         Mantiene la propiedad del max-heap moviendo el elemento hacia arriba.
         Se ejecuta después de insertar un nuevo elemento.
+        Usa el operador > de Task que considera prioridad Y fecha de vencimiento.
         """
         parent = self._parent(index)
 
         # Mientras no sea la raíz y el elemento sea mayor que su padre
-        if index > 0 and self.heap[index].priority > self.heap[parent].priority:
+        if index > 0 and self.heap[index] > self.heap[parent]:
             self._swap(index, parent)
             self._heapify_up(parent)
 
@@ -44,16 +45,17 @@ class MaxHeap:
         """
         Mantiene la propiedad del max-heap moviendo el elemento hacia abajo.
         Se ejecuta después de extraer el elemento máximo.
+        Usa el operador > de Task que considera prioridad Y fecha de vencimiento.
         """
         largest = index
         left = self._left_child(index)
         right = self._right_child(index)
 
         # Encontrar el mayor entre el nodo actual y sus hijos
-        if left < len(self.heap) and self.heap[left].priority > self.heap[largest].priority:
+        if left < len(self.heap) and self.heap[left] > self.heap[largest]:
             largest = left
 
-        if right < len(self.heap) and self.heap[right].priority > self.heap[largest].priority:
+        if right < len(self.heap) and self.heap[right] > self.heap[largest]:
             largest = right
 
         # Si el mayor no es el nodo actual, intercambiar y continuar
@@ -123,7 +125,7 @@ class MaxHeap:
 
         # Reequilibrar (puede necesitar subir o bajar)
         parent = self._parent(index)
-        if index > 0 and self.heap[index].priority > self.heap[parent].priority:
+        if index > 0 and self.heap[index] > self.heap[parent]:
             self._heapify_up(index)
         else:
             self._heapify_down(index)
