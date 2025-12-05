@@ -87,6 +87,30 @@ class Task:
 
         return self.due_date < other.due_date  # Fecha más cercana primero
 
+    def __gt__(self, other):
+        """
+        Comparación 'mayor que' para el max-heap.
+        Una tarea es 'mayor' (más prioritaria) si tiene:
+        1. Mayor prioridad numérica (ALTA > MEDIA > BAJA)
+        2. Si tienen la misma prioridad, la que vence antes es mayor (más urgente)
+        """
+        if not isinstance(other, Task):
+            return NotImplemented
+
+        if self.priority != other.priority:
+            return self.priority > other.priority
+
+        # Si tienen la misma prioridad, la fecha más cercana es "mayor" (más urgente)
+        return self.due_date < other.due_date
+
+    def __le__(self, other):
+        """Menor o igual que"""
+        return self == other or self < other
+
+    def __ge__(self, other):
+        """Mayor o igual que"""
+        return self == other or self > other
+
     def to_dict(self):
         """
         Convierte la tarea a un diccionario.

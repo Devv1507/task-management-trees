@@ -35,3 +35,65 @@ Este proyecto academico demuestra la implementacion y aplicacion practica de est
 - **Eliminar tareas especificas** por ID
 - **Estadisticas en tiempo real** (total, por prioridad)
 - **Visualizacion de todas las tareas** ordenadas
+
+## Requisitos del Sistema
+
+- **Python**: 3.8 o superior
+- **Sistema Operativo**: Windows, macOS o Linux
+- **Dependencias**: Ver `requirements.txt`
+
+## Instalacion
+
+### 1. Clonar el repositorio
+
+```bash
+git clone <url-del-repositorio>
+cd temporal-repository
+```
+
+### 2. Crear entorno virtual (recomendado)
+
+```bash
+python -m venv env
+## python3 -m venv env
+
+# Activar en Windows
+env\Scripts\activate
+
+# Activar en macOS/Linux
+source env/bin/activate
+```
+
+### 3. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+
+## Ejecucion
+
+### Ejecutar pruebas
+
+
+### Ejecutar la aplicacion
+
+```bash
+python main.py
+## python3 main.py
+```
+
+```bash
+# Todas las pruebas
+python tests/run_all_tests.py
+## python3 tests/run_all_tests.py
+
+# Pruebas de AVL Tree
+python tests/test_avl_tree.py
+## python3 tests/test_avl_tree.py
+
+
+# Solo pruebas de Max-Heap
+python tests/test_max_heap.py
+## python3 tests/test_max_heap.py
+```
