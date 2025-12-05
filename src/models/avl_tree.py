@@ -324,3 +324,54 @@ class AVLTree:
 
         return self._is_balanced(node.left) and self._is_balanced(node.right)
 
+    def is_balanced(self):
+        """Verifica que el árbol esté balanceado (AVL válido)"""
+        return self._is_balanced(self.root)
+    
+    def get_preorder(self):
+        """Retorna recorrido en preorden (raíz-izq-der)"""
+        result = []
+        self._preorder_ids(self.root, result)
+        return result
+
+    def _preorder_ids(self, node, result):
+        """Helper para preorden"""
+        if node:
+            result.append(node.task.task_id)
+            self._preorder_ids(node.left, result)
+            self._preorder_ids(node.right, result)
+
+    def get_inorder(self):
+        """Retorna recorrido en inorden (izq-raíz-der)"""
+        result = []
+        self._inorder_ids(self.root, result)
+        return result
+
+    def _inorder_ids(self, node, result):
+        """Helper para inorden"""
+        if node:
+            self._inorder_ids(node.left, result)
+            result.append(node.task.task_id)
+            self._inorder_ids(node.right, result)
+
+    def get_postorder(self):
+        """Retorna recorrido en postorden (izq-der-raíz)"""
+        result = []
+        self._postorder_ids(self.root, result)
+        return result
+
+    def _postorder_ids(self, node, result):
+        """Helper para postorden"""
+        if node:
+            self._postorder_ids(node.left, result)
+            self._postorder_ids(node.right, result)
+            result.append(node.task.task_id)
+
+    def is_inorder_sorted(self):
+        """Verifica que el recorrido inorden esté ordenado (prueba de BST válido)"""
+        inorder = self.get_inorder()
+        
+        for i in range(len(inorder) - 1):
+            if inorder[i] >= inorder[i + 1]:
+                return False
+        return True
