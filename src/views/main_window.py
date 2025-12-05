@@ -504,20 +504,26 @@ class MainWindow:
         self.avl_traversals_textbox.delete("1.0", "end")
 
         # Mostrar recorridos
-        self.avl_traversals_textbox.insert("end", "Recorridos del Arbol AVL:\n\n")
-        self.avl_traversals_textbox.insert("end", f"Preorden:  {traversals['preorden']}\n")
-        self.avl_traversals_textbox.insert("end", f"Inorden:   {traversals['inorden']}")
-        # Verificar si el inorden está ordenado (BST válido)
-        if traversals['is_sorted']:
-            self.avl_traversals_textbox.insert("end", " ✓\n")
-        else:
-            self.avl_traversals_textbox.insert("end", " ✗ (ERROR)\n")
-        self.avl_traversals_textbox.insert("end", f"Postorden: {traversals['postorden']}\n\n")
+        if avl_stats['nodos'] > 0:
+            self.avl_traversals_textbox.insert("end", "Recorridos del Arbol AVL:\n\n")
+            self.avl_traversals_textbox.insert("end", f"Preorden: {traversals['preorden']}\n")
+            self.avl_traversals_textbox.insert("end", f"Inorden: {traversals['inorden']}")
 
-        # Estadísticas del árbol
-        self.avl_traversals_textbox.insert("end", f"Altura: {avl_stats['altura']}, ")
-        self.avl_traversals_textbox.insert("end", f"Nodos: {avl_stats['nodos']}, ")
-        self.avl_traversals_textbox.insert("end", f"Balanceado: {'SI' if avl_stats['balanceado'] else 'NO'}\n")
+            # Verificar si el inorden está ordenado (BST válido)
+            if traversals['is_sorted']:
+                self.avl_traversals_textbox.insert("end", " ✓\n")
+            else:
+                self.avl_traversals_textbox.insert("end", " ✗ (ERROR)\n")
+
+            self.avl_traversals_textbox.insert("end", f"Postorden: {traversals['postorden']}\n\n")
+
+            # Estadísticas del árbol
+            self.avl_traversals_textbox.insert("end", f"Altura: {avl_stats['altura']}, ")
+            self.avl_traversals_textbox.insert("end", f"Nodos: {avl_stats['nodos']}, ")
+            self.avl_traversals_textbox.insert("end", f"Balanceado: {'SI' if avl_stats['balanceado'] else 'NO'}\n")
+        else:
+            # Mensaje limpio si está vacío
+            self.avl_traversals_textbox.insert("end", "Arbol vacio")
 
         self.avl_traversals_textbox.configure(state="disabled")
 
