@@ -68,6 +68,9 @@ source env/bin/activate
 
 ```bash
 pip install -r requirements.txt
+
+# En caso de un error por el modulo 'packaging' no encontrado, utilizar
+# pip install packaging
 ```
 
 
@@ -97,3 +100,30 @@ python tests/test_avl_tree.py
 python tests/test_max_heap.py
 ## python3 tests/test_max_heap.py
 ```
+
+## Uso de la Aplicacion
+
+### Agregar una Tarea
+
+1. Ingrese la descripcion de la tarea
+2. Seleccione la prioridad (ALTA, MEDIA, BAJA)
+3. Ingrese la fecha de vencimiento (YYYY-MM-DD) o use los atajos
+4. Haga clic en "Agregar Tarea"
+
+### Completar Tarea Prioritaria
+
+- Haga clic en "Completar Prioritaria"
+- El sistema extraera y mostrara la tarea con mayor prioridad
+
+### Buscar Tarea por ID
+
+1. Ingrese el ID de la tarea en el campo de busqueda
+2. Haga clic en "Buscar"
+3. Se mostrara la informacion completa de la tarea
+
+### Eliminar Tarea Especifica
+
+1. Ingrese el ID de la tarea
+2. Haga clic en "Eliminar por ID"
+3. Confirme la eliminacion
+
