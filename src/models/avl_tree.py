@@ -284,3 +284,43 @@ class AVLTree:
                 extension = "    " if is_tail else "│   "
                 is_last = (i == len(children) - 1)
                 self._build_tree_string(child, prefix + extension, is_last, lines)
+
+    def get_tree_stats(self):
+        """
+        Retorna estadísticas del árbol AVL para verificar balance.
+
+        Returns:
+            dict: Diccionario con estadísticas del árbol
+        """
+        if self.is_empty():
+            return {
+                'height': 0,
+                'nodes': 0,
+                'balanced': True,
+                'min_height': 0,
+                'max_height': 0
+            }
+
+        return {
+            'height': self.root.height,
+            'nodes': self.size(),
+            'balanced': self._is_balanced(self.root),
+            'balance_factor': self._get_balance(self.root)
+        }
+
+    def _is_balanced(self, node):
+        """
+        Verifica recursivamente si el árbol está balanceado.
+
+        Returns:
+            bool: True si el árbol está balanceado
+        """
+        if not node:
+            return True
+
+        balance = self._get_balance(node)
+        if abs(balance) > 1:
+            return False
+
+        return self._is_balanced(node.left) and self._is_balanced(node.right)
+
