@@ -375,3 +375,14 @@ class AVLTree:
             if inorder[i] >= inorder[i + 1]:
                 return False
         return True
+    
+    def get_recent_operations(self, count=10):
+        """
+        Retorna las últimas N operaciones
+        Args:
+            count (int): Número de operaciones a retornar
+
+        Returns:
+            list: Últimas operaciones
+        """
+        return self.operations[-count:] if self.operations else []
