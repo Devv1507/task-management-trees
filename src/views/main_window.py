@@ -138,3 +138,76 @@ class MainWindow:
             hover_color="#1565C0"
         )
         add_button.pack(pady=20, padx=20, fill="x")
+
+        # ========== PANEL DERECHO: LISTA DE TAREAS ==========
+        right_panel = ctk.CTkFrame(main_container)
+        right_panel.pack(side="right", fill="both", expand=True, padx=(5, 0), pady=0)
+
+        # Título y controles
+        control_frame = ctk.CTkFrame(right_panel, fg_color="transparent")
+        control_frame.pack(fill="x", padx=15, pady=15)
+
+        tasks_title = ctk.CTkLabel(
+            control_frame,
+            text="Lista de Tareas",
+            font=ctk.CTkFont(size=18, weight="bold")
+        )
+        tasks_title.pack(side="left")
+
+        # Botones de acción
+        button_frame = ctk.CTkFrame(control_frame, fg_color="transparent")
+        button_frame.pack(side="right")
+
+        complete_btn = ctk.CTkButton(
+            button_frame,
+            text="✓ Completar Prioritaria",
+            command=self.complete_highest_priority,
+            fg_color="#4CAF50",
+            hover_color="#45a049",
+            width=160
+        )
+        complete_btn.pack(side="left", padx=5)
+
+        refresh_btn = ctk.CTkButton(
+            button_frame,
+            text="Actualizar",
+            command=self.refresh_task_list,
+            width=100
+        )
+        refresh_btn.pack(side="left", padx=5)
+
+        # Frame de búsqueda
+        search_frame = ctk.CTkFrame(right_panel, fg_color="transparent")
+        search_frame.pack(fill="x", padx=15, pady=(0, 10))
+
+        search_label = ctk.CTkLabel(search_frame, text="Buscar por ID:")
+        search_label.pack(side="left", padx=(0, 10))
+
+        self.search_entry = ctk.CTkEntry(search_frame, placeholder_text="ID de tarea", width=100)
+        self.search_entry.pack(side="left", padx=5)
+
+        search_btn = ctk.CTkButton(
+            search_frame,
+            text="Buscar",
+            command=self.search_task,
+            width=80
+        )
+        search_btn.pack(side="left", padx=5)
+
+        delete_btn = ctk.CTkButton(
+            search_frame,
+            text="Eliminar por ID",
+            command=self.delete_task_by_id,
+            fg_color="#F44336",
+            hover_color="#D32F2F",
+            width=120
+        )
+        delete_btn.pack(side="left", padx=5)
+
+        # Lista de tareas
+        self.tasks_textbox = ctk.CTkTextbox(
+            right_panel,
+            font=ctk.CTkFont(family="Courier New", size=12),
+            wrap="none"
+        )
+        self.tasks_textbox.pack(fill="both", expand=True, padx=15, pady=(0, 15))
