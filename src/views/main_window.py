@@ -290,3 +290,193 @@ class MainWindow:
         target_date = datetime.now() + timedelta(days=days_offset)
         self.date_entry.delete(0, 'end')
         self.date_entry.insert(0, target_date.strftime("%Y-%m-%d"))
+
+    def add_task(self):
+        """Agrega una nueva tarea al sistema"""
+        try:
+            # Obtener datos
+            description = self.desc_entry.get("1.0", "end").strip()
+            priority = self.priority_var.get()
+            due_date = self.date_entry.get().strip()
+
+            # Validar fecha
+            if not due_date:
+                messagebox.showwarning("Advertencia", "Por favor ingrese una fecha de vencimiento")
+                return
+
+            try:
+                datetime.strptime(due_date, "%Y-%m-%d")
+            except ValueError:
+                messagebox.showerror("Error", "Formato de fecha inválido. Use YYYY-MM-DD")
+                return
+
+            # Agregar tarea
+            task = self.controller.add_task(description, priority, due_date)
+
+            # Limpiar campos
+            self.desc_entry.delete("1.0", "end")
+            self.date_entry.delete(0, 'end')
+            self.priority_var.set("MEDIA")
+
+            # Actualizar vista
+            self.refresh_task_list()
+            self.update_statistics()
+            self.update_visualizations()
+
+        except ValueError as e:
+            messagebox.showerror("Error", str(e))
+        except Exception as e:
+            messagebox.showerror("Error", f"Error inesperado: {str(e)}")
+
+    def complete_highest_priority(self):
+        """Completa la tarea con mayor prioridad"""
+        task = self.controller.complete_highest_priority_task()
+
+        if task:
+            self.refresh_task_list()
+            self.update_statistics()
+            self.update_visualizations()
+            messagebox.showinfo(
+                "Tarea Completada",
+                f"✓ Tarea completada:\n\n{task}"
+            )
+        else:
+            messagebox.showinfo("Información", "No hay tareas pendientes")
+
+    def search_task(self):
+        """Busca una tarea por ID"""
+        try:
+            task_id = int(self.search_entry.get())
+            task = self.controller.search_task_by_id(task_id)
+
+            if task:
+                messagebox.showinfo(
+                    f"Tarea encontrada (ID: {task_id})",
+                    f"{task}\n\nCreada: {task.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+                )
+            else:
+                messagebox.showwarning("No encontrado", f"No existe tarea con ID: {task_id}")
+
+        except ValueError:
+            messagebox.showerror("Error", "Por favor ingrese un ID válido (número)")
+
+    def delete_task_by_id(self):
+        """Elimina una tarea específica por ID"""
+        try:
+            task_id = int(self.search_entry.get())
+
+            if messagebox.askyesno("Confirmar", f"¿Eliminar tarea con ID {task_id}?"):
+                success = self.controller.delete_task_by_id(task_id)
+
+                if success:
+                    self.refresh_task_list()
+                    self.update_statistics()
+                    self.update_visualizations()
+                    self.search_entry.delete(0, 'end')
+                    messagebox.showinfo("Éxito", f"Tarea {task_id} eliminada")
+                else:
+                    messagebox.showwarning("No encontrado", f"No existe tarea con ID: {task_id}")
+
+        except ValueError:
+            messagebox.showerror("Error", "Por favor ingrese un ID válido (número)")
+
+    def refresh_task_list(self):
+        """Actualiza la lista de tareas en la interfaz"""
+        self.tasks_textbox.configure(state="normal")
+        self.tasks_textbox.delete("1.0", "end")
+
+        tasks = self.controller.get_all_tasks_by_id()
+
+        if not tasks:
+            self.tasks_textbox.insert("end", "\n   No hay tareas registradas\n\n")
+        else:
+            # Encabezado
+            header = f"{'ID':<6} {'Descripción':<40} {'Prioridad':<10} {'Vencimiento':<12}\n"
+            separator = "=" * 100 + "\n"
+
+            self.tasks_textbox.insert("end", header)
+            self.tasks_textbox.insert("end", separator)
+
+            # Tareas
+            for task in tasks:
+                desc = task.description[:37] + "..." if len(task.description) > 40 else task.description
+                line = f"{task.task_id:<6} {desc:<40} {task.priority_name:<10} {task.due_date:<12}\n"
+                self.tasks_textbox.insert("end", line)
+
+        self.tasks_textbox.configure(state="disabled")
+
+    def update_statistics(self):
+        """Actualiza las estadísticas mostradas"""
+        stats = self.controller.get_statistics()
+
+        # Formato compacto horizontal
+        next_task = stats['highest_priority']
+        next_desc = 'N/A'
+        if next_task:
+            next_desc = next_task.description[:40] + '...' if len(next_task.description) > 40 else next_task.description
+
+        stats_text = f"Total: {stats['total']}  |  Alta: {stats['alta']}  |  Media: {stats['media']}  |  Baja: {stats['baja']}\n"
+        stats_text += f"Próxima prioritaria: {next_desc}"
+
+        self.stats_label.configure(text=stats_text)
+
+    def update_visualizations(self):
+        """Actualiza las visualizaciones del Heap y AVL"""
+        # Actualizar visualización del Max-Heap
+        heap_repr = self.controller.get_heap_visualization()
+        self.heap_viz_textbox.configure(state="normal")
+        self.heap_viz_textbox.delete("1.0", "end")
+        self.heap_viz_textbox.insert("end", f"Representacion como arreglo:\n{heap_repr}\n\n")
+        self.heap_viz_textbox.insert("end", "Formato: (ID:PrioridadFecha)\n")
+        self.heap_viz_textbox.insert("end", "Donde: A=Alta, M=Media, B=Baja\n")
+        self.heap_viz_textbox.configure(state="disabled")
+
+        # Actualizar recorridos del AVL Tree
+        traversals = self.controller.get_avl_traversals()
+        avl_stats = self.controller.get_avl_stats()
+
+        self.avl_traversals_textbox.configure(state="normal")
+        self.avl_traversals_textbox.delete("1.0", "end")
+
+        if avl_stats['nodes'] > 0:
+            # Mostrar los tres recorridos
+            self.avl_traversals_textbox.insert("end", "Recorridos del Arbol AVL:\n\n")
+            self.avl_traversals_textbox.insert("end", f"Preorden:  {traversals['preorden']}\n")
+            self.avl_traversals_textbox.insert("end", f"Inorden:   {traversals['inorden']}")
+
+            # Verificar si el inorden está ordenado (BST válido)
+            if traversals['is_sorted']:
+                self.avl_traversals_textbox.insert("end", " ✓\n")
+            else:
+                self.avl_traversals_textbox.insert("end", " ✗ (ERROR)\n")
+
+            self.avl_traversals_textbox.insert("end", f"Postorden: {traversals['postorden']}\n\n")
+
+            # Información adicional
+            balanced_text = "SI" if avl_stats['balanced'] else "NO"
+            self.avl_traversals_textbox.insert("end", f"Altura: {avl_stats['height']}, ")
+            self.avl_traversals_textbox.insert("end", f"Nodos: {avl_stats['nodes']}, ")
+            self.avl_traversals_textbox.insert("end", f"Balanceado: {balanced_text}")
+        else:
+            self.avl_traversals_textbox.insert("end", "Arbol vacio")
+
+        self.avl_traversals_textbox.configure(state="disabled")
+
+        # Actualizar historial de operaciones del AVL
+        operations = self.controller.get_avl_operations(15)
+
+        self.avl_operations_textbox.configure(state="normal")
+        self.avl_operations_textbox.delete("1.0", "end")
+
+        if operations:
+            self.avl_operations_textbox.insert("end", "Ultimas 15 operaciones:\n\n")
+            for i, op in enumerate(operations, 1):
+                self.avl_operations_textbox.insert("end", f"{i}. {op}\n")
+        else:
+            self.avl_operations_textbox.insert("end", "Sin operaciones registradas")
+
+        self.avl_operations_textbox.configure(state="disabled")
+
+    def run(self):
+        """Inicia el loop principal de la aplicación"""
+        self.root.mainloop()
