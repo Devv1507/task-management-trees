@@ -506,13 +506,13 @@ class MainWindow:
         # Mostrar recorridos
         self.avl_traversals_textbox.insert("end", "Recorridos del Arbol AVL:\n\n")
         self.avl_traversals_textbox.insert("end", f"Preorden:  {traversals['preorden']}\n")
-        self.avl_traversals_textbox.insert("end", f"Inorden:   {traversals['inorden']}\n")
+        self.avl_traversals_textbox.insert("end", f"Inorden:   {traversals['inorden']}")
+        # Verificar si el inorden está ordenado (BST válido)
+        if traversals['is_sorted']:
+            self.avl_traversals_textbox.insert("end", " ✓\n")
+        else:
+            self.avl_traversals_textbox.insert("end", " ✗ (ERROR)\n")
         self.avl_traversals_textbox.insert("end", f"Postorden: {traversals['postorden']}\n\n")
-
-        # Verificación de BST válido
-        is_sorted = traversals['is_sorted']
-        check_mark = "SI" if is_sorted else "NO"
-        self.avl_traversals_textbox.insert("end", f"Inorden ordenado (BST valido): {check_mark}\n\n")
 
         # Estadísticas del árbol
         self.avl_traversals_textbox.insert("end", f"Altura: {avl_stats['altura']}, ")
