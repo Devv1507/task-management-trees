@@ -1,8 +1,3 @@
-"""
-Implementación de Árbol AVL para indexación eficiente de tareas por ID.
-Garantiza búsqueda, inserción y eliminación en O(log n).
-"""
-
 class AVLNode:
     """Nodo del árbol AVL"""
 
@@ -47,11 +42,6 @@ class AVLTree:
     def _rotate_right(self, z):
         """
         Rotación simple a la derecha
-             z                      y
-            / \                    / \
-           y   C    ------>       x   z
-          / \                        / \
-         x   B                      B   C
         """
         y = z.left
         B = y.right
@@ -72,11 +62,6 @@ class AVLTree:
     def _rotate_left(self, z):
         """
         Rotación simple a la izquierda
-           z                          y
-          / \                        / \
-         A   y       ------>        z   x
-            / \                    / \
-           B   x                  A   B
         """
         y = z.right
         B = y.left

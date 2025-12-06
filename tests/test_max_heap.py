@@ -1,8 +1,3 @@
-"""
-Casos de prueba para MaxHeap.
-Verifica el correcto funcionamiento de la cola de prioridad.
-"""
-
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -10,7 +5,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from src.models.max_heap import MaxHeap
 from src.models.task import Task
 
-
+"""
+Casos de prueba para MaxHeap.
+Verifica el correcto funcionamiento de la cola de prioridad.
+"""
 def test_insert_and_extract():
     """Prueba de inserción: Ingresar múltiples tareas con diferentes prioridades"""
     print("\n=== Test 1: Inserción y extracción por prioridad ===")

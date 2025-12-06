@@ -1,8 +1,3 @@
-"""
-Vista principal del sistema de gestión de tareas usando CustomTkinter.
-Proporciona una interfaz gráfica moderna y funcional.
-"""
-
 import customtkinter as ctk
 from tkinter import messagebox
 from datetime import datetime, timedelta
@@ -11,7 +6,6 @@ from datetime import datetime, timedelta
 class MainWindow:
     """
     Ventana principal de la aplicación.
-    Interfaz gráfica moderna con CustomTkinter.
     """
 
     def __init__(self, controller):

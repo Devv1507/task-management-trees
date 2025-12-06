@@ -1,11 +1,7 @@
-"""
-Implementación de Max-Heap para gestionar cola de prioridad de tareas.
-El elemento con mayor prioridad siempre estará en la raíz.
-"""
-
 class MaxHeap:
     """
     Max-Heap binario para gestionar tareas por prioridad.
+    El elemento con mayor prioridad siempre estará en la raíz.
     Prioridad: Alta=3, Media=2, Baja=1
     """
 

@@ -1,12 +1,6 @@
-"""
-Controlador principal del sistema de gestión de tareas.
-Integra MaxHeap para prioridades y AVLTree para indexación.
-"""
-
 from src.models.max_heap import MaxHeap
 from src.models.avl_tree import AVLTree
 from src.models.task import Task
-
 
 class TaskController:
     """
@@ -252,4 +246,3 @@ class TaskController:
             'nodos': nodes,
             'balanceado': balanced
         }
-

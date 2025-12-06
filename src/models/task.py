@@ -1,7 +1,3 @@
-"""
-Modelo de datos para representar una tarea en el sistema.
-"""
-
 from datetime import datetime
 from enum import Enum
 
@@ -15,7 +11,7 @@ class Priority(Enum):
 
 class Task:
     """
-    Representa una tarea en el sistema de gestión de productividad.
+    Representa una tarea en el sistema de gestión.
 
     Atributos:
         task_id (int): Identificador único de la tarea

@@ -1,8 +1,3 @@
-"""
-Casos de prueba para AVLTree.
-Verifica el correcto funcionamiento del árbol auto-balanceado.
-"""
-
 import sys
 import os
 import time
@@ -12,7 +7,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from src.models.avl_tree import AVLTree
 from src.models.task import Task
 
-
+"""
+Casos de prueba para AVLTree.
+Verifica el correcto funcionamiento del árbol auto-balanceado.
+"""
 def test_search():
     """Prueba de indexación: Buscar elementos aleatorios en el árbol"""
     print("\n=== Test 1: Búsqueda de elementos ===")
