@@ -76,15 +76,14 @@ pip install -r requirements.txt
 
 ## Ejecucion
 
-### Ejecutar pruebas
-
-
 ### Ejecutar la aplicacion
 
 ```bash
 python main.py
 ## python3 main.py
 ```
+
+### Ejecutar pruebas
 
 ```bash
 # Todas las pruebas
